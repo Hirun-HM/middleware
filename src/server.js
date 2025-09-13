@@ -28,7 +28,18 @@ const io = new Server(server, {
 });
 
 // Middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrcAttr: ["'unsafe-inline'", "'unsafe-hashes'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "ws:", "wss:", "http://localhost:5000", "ws://localhost:5000"],
+    },
+  },
+}));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
