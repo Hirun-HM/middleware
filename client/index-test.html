@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SwiLogistics - Client Portal</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+
+  <body>
+    <div class="app-container">
+      <div class="main-card">
+        <!-- Header -->
+        <div class="header">
+          <div class="header-content">
+            <h1><i class="fas fa-truck"></i> SwiLogistics</h1>
+            <p>Professional Client Portal - Real-time Package Management</p>
+            <div>
+              <span id="connectionStatus" class="status-badge disconnected">
+                <i class="fas fa-circle"></i> Disconnected
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+          <!-- Test if basic HTML shows -->
+          <div style="padding: 2rem; text-align: center">
+            <h2>🔧 Testing Basic HTML</h2>
+            <p>If you see this, HTML and CSS are loading correctly.</p>
+            <div id="jsTest" style="color: red; margin-top: 1rem">
+              JavaScript NOT loaded
+            </div>
+          </div>
+
+          <!-- Authentication Section -->
+          <div id="authContainer">
+            <div
+              style="
+                background: #f1f5f9;
+                padding: 1rem;
+                margin: 1rem 0;
+                border-radius: 8px;
+              "
+            >
+              <h3>🔐 Authentication Section Container</h3>
+              <p>This container should be populated by JavaScript</p>
+            </div>
+          </div>
+
+          <!-- Order Management Section -->
+          <div id="orderContainer">
+            <div
+              style="
+                background: #f1f5f9;
+                padding: 1rem;
+                margin: 1rem 0;
+                border-radius: 8px;
+              "
+            >
+              <h3>📦 Order Management Section Container</h3>
+              <p>This container should be populated by JavaScript</p>
+            </div>
+          </div>
+
+          <!-- System Monitoring Section -->
+          <div id="systemContainer">
+            <div
+              style="
+                background: #f1f5f9;
+                padding: 1rem;
+                margin: 1rem 0;
+                border-radius: 8px;
+              "
+            >
+              <h3>🖥️ System Monitoring Section Container</h3>
+              <p>This container should be populated by JavaScript</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts with error handling -->
+    <script>
+      console.log("🔍 Starting script loading tests...");
+
+      // Test basic JavaScript
+      document.getElementById("jsTest").textContent = "JavaScript IS loaded";
+      document.getElementById("jsTest").style.color = "green";
+
+      let scriptsLoaded = 0;
+      let totalScripts = 7;
+
+      function checkAllScriptsLoaded() {
+        scriptsLoaded++;
+        console.log(`📜 Script ${scriptsLoaded}/${totalScripts} loaded`);
+
+        if (scriptsLoaded === totalScripts) {
+          console.log("🎯 All scripts loaded, initializing app...");
+          if (typeof initializeApp === "function") {
+            initializeApp();
+          } else {
+            console.error("❌ initializeApp function not found!");
+          }
+        }
+      }
+
+      function loadScript(src, onload) {
+        const script = document.createElement("script");
+        script.src = src;
+        script.onload = onload;
+        script.onerror = () => console.error(`❌ Failed to load: ${src}`);
+        document.head.appendChild(script);
+      }
+    </script>
+
+    <script
+      src="/socket.io/socket.io.js"
+      onload="checkAllScriptsLoaded()"
+    ></script>
+    <script
+      src="components/PrimaryButton.js"
+      onload="checkAllScriptsLoaded()"
+    ></script>
+    <script
+      src="components/InputField.js"
+      onload="checkAllScriptsLoaded()"
+    ></script>
+    <script
+      src="components/SelectField.js"
+      onload="checkAllScriptsLoaded()"
+    ></script>
+    <script src="js/UIBuilder.js" onload="checkAllScriptsLoaded()"></script>
+    <script src="js/api.js" onload="checkAllScriptsLoaded()"></script>
+    <script src="js/websocket.js" onload="checkAllScriptsLoaded()"></script>
+    <script src="js/app.js" onload="checkAllScriptsLoaded()"></script>
+  </body>
+</html>

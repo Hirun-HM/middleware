@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SwiLogistics - Client Portal</title>
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+            <style>
+            :root {
+                --primary-color: #2563eb;
+                --primary-hover: #1d4ed8;
+                --secondary-color: #64748b;
+                --success-color: #059669;
+                --danger-color: #dc2626;
+                --warning-color: #d97706;
+                --info-color: #0891b2;
+
+                --bg-primary: #ffffff;
+                --bg-secondary: #f8fafc;
+                --bg-accent: #f1f5f9;
+                --border-color: #e2e8f0;
+                --text-primary: #1e293b;
+                --text-secondary: #64748b;
+                --text-muted: #94a3b8;
+
+                --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+                --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+                0 2px 4px -2px rgb(0 0 0 / 0.1);
+                --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+                0 4px 6px -4px rgb(0 0 0 / 0.1);
+                --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+                0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+                --radius-sm: 0.375rem;
+                --radius-md: 0.5rem;
+                --radius-lg: 0.75rem;
+                --radius-xl: 1rem;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: "Inter", sans-serif;
+                min-height: 100vh;
+                color: var(--text-primary);
+                line-height: 1.6;
+            }
+
+            .app-container {
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem 1rem;
+            }
+
+            .main-card {
+                background: var(--bg-primary);
+                border-radius: var(--radius-xl);
+                box-shadow: var(--shadow-xl);
+                width: 100%;
+                max-width: 1200px;
+                overflow: hidden;
+                backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            /* Header Styles */
+            .header {
+                background: linear-gradient(
+                135deg,
+                var(--primary-color) 0%,
+                var(--primary-hover) 100%
+                );
+                color: white;
+                padding: 2rem;
+                text-align: center;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .header::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+                opacity: 0.1;
+            }
+
+            .header-content {
+                position: relative;
+                z-index: 1;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .header p {
+                font-size: 1.1rem;
+                opacity: 0.9;
+                margin-bottom: 1.5rem;
+            }
+
+            .status-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.5rem 1rem;
+                border-radius: var(--radius-lg);
+                font-weight: 500;
+                font-size: 0.875rem;
+                transition: all 0.3s ease;
+            }
+
+            .status-badge.connected {
+                background: rgba(5, 150, 105, 0.2);
+                color: #065f46;
+                border: 1px solid rgba(5, 150, 105, 0.3);
+            }
+
+            .status-badge.disconnected {
+                background: rgba(220, 38, 38, 0.2);
+                color: #991b1b;
+                border: 1px solid rgba(220, 38, 38, 0.3);
+            }
+
+            /* Main Content */
+            .main-content {
+                padding: 2rem;
+                display: grid;
+                gap: 2rem;
+                grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            }
+
+            /* Card Styles */
+            .feature-card {
+                background: var(--bg-secondary);
+                border-radius: var(--radius-lg);
+                padding: 1.5rem;
+                border: 1px solid var(--border-color);
+                transition: all 0.3s ease;
+            }
+
+            .feature-card:hover {
+                box-shadow: var(--shadow-md);
+                transform: translateY(-2px);
+            }
+
+            .card-header {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .card-icon {
+                width: 2.5rem;
+                height: 2.5rem;
+                border-radius: var(--radius-md);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.25rem;
+                color: white;
+            }
+
+            .card-icon.auth {
+                background: var(--success-color);
+            }
+            .card-icon.orders {
+                background: var(--primary-color);
+            }
+            .card-icon.realtime {
+                background: var(--warning-color);
+            }
+            .card-icon.system {
+                background: var(--info-color);
+            }
+
+            .card-title {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: var(--text-primary);
+            }
+
+            /* Button Styles */
+            .btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                font-weight: 500;
+                font-size: 0.875rem;
+                border-radius: var(--radius-md);
+                border: none;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                text-decoration: none;
+                min-height: 2.5rem;
+            }
+
+            .btn:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none !important;
+            }
+
+            .btn:not(:disabled):hover {
+                transform: translateY(-1px);
+                box-shadow: var(--shadow-md);
+            }
+
+            .btn-small {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.75rem;
+                min-height: 2rem;
+            }
+
+            .btn-medium {
+                padding: 0.5rem 1rem;
+            }
+
+            .btn-large {
+                padding: 0.75rem 1.5rem;
+                font-size: 1rem;
+                min-height: 3rem;
+            }
+
+            .btn-primary {
+                background: var(--primary-color);
+                color: white;
+            }
+
+            .btn-primary:hover:not(:disabled) {
+                background: var(--primary-hover);
+            }
+
+            .btn-secondary {
+                background: var(--secondary-color);
+                color: white;
+            }
+
+            .btn-success {
+                background: var(--success-color);
+                color: white;
+            }
+
+            .btn-danger {
+                background: var(--danger-color);
+                color: white;
+            }
+
+            .button-group {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
+            }
+
+            /* Form Styles */
+            .order-form {
+                display: grid;
+                gap: 1.25rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .form-row {
+                display: grid;
+                gap: 1rem;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .form-label {
+                font-weight: 500;
+                color: var(--text-primary);
+                margin-bottom: 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            .form-input,
+            .form-select {
+                padding: 0.75rem;
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius-md);
+                font-size: 0.875rem;
+                background: var(--bg-primary);
+                transition: all 0.2s ease;
+            }
+
+            .form-input:focus,
+            .form-select:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            }
+
+            /* Output Styles */
+            .output-container {
+                background: var(--bg-primary);
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius-md);
+                padding: 1rem;
+                margin-top: 1rem;
+                max-height: 250px;
+                overflow-y: auto;
+            }
+
+            .output-content {
+                font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+                font-size: 0.875rem;
+                line-height: 1.6;
+                color: var(--text-primary);
+            }
+
+            /* Updates List */
+            .updates-container {
+                background: var(--bg-primary);
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius-md);
+                max-height: 300px;
+                overflow-y: auto;
+            }
+
+            .update-item {
+                padding: 1rem;
+                border-bottom: 1px solid var(--border-color);
+                display: flex;
+                align-items: flex-start;
+                gap: 0.75rem;
+                transition: background-color 0.2s ease;
+            }
+
+            .update-item:hover {
+                background: var(--bg-accent);
+            }
+
+            .update-item:last-child {
+                border-bottom: none;
+            }
+
+            .update-icon {
+                flex-shrink: 0;
+                width: 1.25rem;
+                text-align: center;
+                margin-top: 0.125rem;
+            }
+
+            .update-content {
+                flex: 1;
+            }
+
+            .update-message {
+                font-size: 0.875rem;
+                color: var(--text-primary);
+                margin-bottom: 0.25rem;
+            }
+
+            .update-timestamp {
+                font-size: 0.75rem;
+                color: var(--text-muted);
+            }
+
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                .main-content {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                }
+
+                .header h1 {
+                font-size: 2rem;
+                }
+
+                .button-group {
+                flex-direction: column;
+                }
+
+                .btn {
+                width: 100%;
+                }
+
+                .form-row {
+                grid-template-columns: 1fr;
+                }
+            }
+
+            /* Animations */
+            @keyframes slideIn {
+                from {
+                opacity: 0;
+                transform: translateY(20px);
+                }
+                to {
+                opacity: 1;
+                transform: translateY(0);
+                }
+            }
+
+            .feature-card {
+                animation: slideIn 0.6s ease forwards;
+            }
+
+            .feature-card:nth-child(2) {
+                animation-delay: 0.1s;
+            }
+            .feature-card:nth-child(3) {
+                animation-delay: 0.2s;
+            }
+            .feature-card:nth-child(4) {
+                animation-delay: 0.3s;
+            }
+            </style>
+    </head>
+
+    <body>
+        <div class="app-container">
+            <div class="main-card">
+                <!-- Header -->
+                <div class="header">
+                <div class="header-content">
+                    <h1><i class="fas fa-truck"></i> SwiLogistics</h1>
+                    <p>Professional Client Portal - Real-time Package Management</p>
+                    <div>
+                    <span id="connectionStatus" class="status-badge disconnected">
+                        <i class="fas fa-circle"></i>
+                        Disconnected
+                    </span>
+                    </div>
+                </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="main-content">
+                <!-- Authentication Section -->
+                <div class="feature-card">
+                    <div class="card-header">
+                    <div class="card-icon auth">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3 class="card-title">Client Authentication</h3>
+                    </div>
+                    <div class="button-group">
+                    <button
+                        class="btn btn-primary btn-medium"
+                        onclick="authenticateClient()"
+                    >
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login as TechShop
+                    </button>
+                    <button
+                        class="btn btn-secondary btn-medium"
+                        onclick="authenticateClient('CLI-002', 'fashionhub_api_key_789')"
+                    >
+                        <i class="fas fa-building"></i>
+                        Login as Fashion Hub
+                    </button>
+                    </div>
+                    <div class="output-container">
+                    <div class="output-content" id="authOutput">
+                        <i class="fas fa-info-circle"></i> Click a login button to
+                        authenticate...
+                    </div>
+                    </div>
+                </div>
+
+                <!-- Order Management -->
+                <div class="feature-card">
+                    <div class="card-header">
+                    <div class="card-icon orders">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <h3 class="card-title">Order Management</h3>
+                    </div>
+                    <div class="order-form">
+                        <div class="form-row">
+                                <div class="form-group">
+                                <label class="form-label">Package Description</label>
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="packageDesc"
+                                    value="Electronics - Smartphone"
+                                />
+                                </div>
+                            <div class="form-group">
+                                <label class="form-label">Weight (kg)</label>
+                                <input
+                                    type="number"
+                                    class="form-input"
+                                    id="packageWeight"
+                                    value="2.5"
+                                    step="0.1"
+                                />
+                                </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                            <label class="form-label">Delivery City</label>
+                            <select class="form-select" id="deliveryCity">
+                                <option value="Kandy">Kandy</option>
+                                <option value="Galle">Galle</option>
+                                <option value="Jaffna">Jaffna</option>
+                                <option value="Anuradhapura">Anuradhapura</option>
+                            </select>
+                            </div>
+                            <div class="form-group">
+                            <label class="form-label">Priority Level</label>
+                            <select class="form-select" id="priority">
+                                <option value="normal">Normal</option>
+                                <option value="high">High</option>
+                                <option value="urgent">Urgent</option>
+                            </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button
+                                class="btn btn-primary btn-large"
+                                onclick="submitOrder()"
+                                id="submitBtn"
+                                disabled
+                            >
+                            <i class="fas fa-paper-plane"></i>
+                            Submit Order
+                        </button>
+                        <button
+                            class="btn btn-secondary btn-medium"
+                            onclick="getOrders()"
+                        >
+                            <i class="fas fa-list"></i>
+                            View Orders
+                        </button>
+                    </div>
+                    <div class="output-container">
+                        <div class="output-content" id="orderOutput">
+                            <i class="fas fa-exclamation-triangle"></i> Please authenticate
+                            first to submit orders...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-time Updates -->
+                <div class="feature-card">
+                    <div class="card-header">
+                    <div class="card-icon realtime">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="card-title">Real-time Updates</h3>
+                    </div>
+                    <div class="button-group">
+                    <button
+                        class="btn btn-success btn-medium"
+                        onclick="connectWebSocket()"
+                    >
+                        <i class="fas fa-plug"></i>
+                        Connect
+                    </button>
+                    <button
+                        class="btn btn-danger btn-medium"
+                        onclick="disconnectWebSocket()"
+                    >
+                        <i class="fas fa-times"></i>
+                        Disconnect
+                    </button>
+                    <button
+                        class="btn btn-secondary btn-small"
+                        onclick="clearUpdates()"
+                    >
+                        <i class="fas fa-trash"></i>
+                        Clear
+                    </button>
+                    </div>
+                    <div class="updates-container" id="updatesList">
+                    <div class="update-item">
+                        <div class="update-icon">📡</div>
+                        <div class="update-content">
+                        <div class="update-message">
+                            Click "Connect" to receive real-time updates
+                        </div>
+                        <div class="update-timestamp">System ready</div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- System Status -->
+                <div class="feature-card">
+                    <div class="card-header">
+                    <div class="card-icon system">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3 class="card-title">System Status</h3>
+                    </div>
+                    <div class="button-group">
+                    <button
+                        class="btn btn-primary btn-medium"
+                        onclick="checkSystemHealth()"
+                    >
+                        <i class="fas fa-heartbeat"></i>
+                        Health Check
+                    </button>
+                    <button
+                        class="btn btn-secondary btn-medium"
+                        onclick="simulateDriverUpdate()"
+                    >
+                        <i class="fas fa-map-marker-alt"></i>
+                        Driver Update
+                    </button>
+                    </div>
+                    <div class="output-container">
+                    <div class="output-content" id="healthOutput">
+                        <i class="fas fa-check-circle"></i> System status: Ready for
+                        demonstration
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Component Scripts -->
+        <script src="/components/PrimaryButton.js"></script>
+        <script src="/components/InputField.js"></script>
+        <script src="/components/SelectField.js"></script>
+
+        <!-- Socket.IO -->
+        <script src="/socket.io/socket.io.js"></script>
+
+        <!-- Main Application Script -->
+        <script>
+        let socket = null;
+        let authToken = null;
+        let currentClientId = null;
+
+        // API Base URL
+        const API_BASE = "http://localhost:5000/api";
+
+        // Connect WebSocket
+        function connectWebSocket() {
+            if (socket) {
+                socket.disconnect();
+            }
+
+            socket = io("http://localhost:5000");
+
+            socket.on("connect", () => {
+                updateConnectionStatus(true);
+                addUpdate("🔗 Connected to SwiLogistics middleware", "success");
+
+            if (currentClientId) {
+                socket.emit("join-room", `client-${currentClientId}`);
+                addUpdate(`📍 Joined room: client-${currentClientId}`, "info");
+            }
+            });
+
+            socket.on("disconnect", () => {
+                updateConnectionStatus(false);
+                addUpdate("❌ Disconnected from server", "error");
+            });
+
+            socket.on("orderUpdate", (data) => {
+                addUpdate(`📦 Order ${data.orderId}: ${data.status}`, "success");
+                updateOrderOutput(
+                    `<i class="fas fa-sync-alt"></i> Real-time update: Order ${data.orderId} is now ${data.status}`
+                );
+            });
+
+            socket.on("driverLocation", (data) => {
+                addUpdate(
+                    `🚚 Driver location update for order ${data.orderId}`,
+                    "info"
+                );
+            });
+
+            socket.on("systemUpdate", (data) => {
+                addUpdate(`🔔 System: ${data.message}`, "warning");
+                });
+            }
+
+        function disconnectWebSocket() {
+            if (socket) {
+                socket.disconnect();
+                socket = null;
+            }
+            updateConnectionStatus(false);
+        }
+
+        function updateConnectionStatus(connected) {
+            const status = document.getElementById("connectionStatus");
+            if (connected) {
+                status.className = "status-badge connected";
+                status.innerHTML = '<i class="fas fa-circle"></i> Connected';
+            } else {
+                status.className = "status-badge disconnected";
+                status.innerHTML = '<i class="fas fa-circle"></i> Disconnected';
+            }
+        }
+
+        function addUpdate(message, type = "info") {
+            const updatesList = document.getElementById("updatesList");
+            const updateItem = document.createElement("div");
+            updateItem.className = "update-item";
+
+            const icon =
+            type === "success"
+                ? "✅"
+                : type === "error"
+                ? "❌"
+                : type === "warning"
+                ? "⚠️"
+                : "ℹ️";
+
+            updateItem.innerHTML = `
+            <div class="update-icon">${icon}</div>
+            <div class="update-content">
+                <div class="update-message">${message}</div>
+                <div class="update-timestamp">${new Date().toLocaleTimeString()}</div>
+            </div>
+            `;
+
+            updatesList.insertBefore(updateItem, updatesList.firstChild);
+
+            // Keep only last 10 updates
+            while (updatesList.children.length > 10) {
+            updatesList.removeChild(updatesList.lastChild);
+            }
+        }
+
+        function clearUpdates() {
+            document.getElementById("updatesList").innerHTML = "";
+            addUpdate("🧹 Updates cleared", "info");
+        }
+
+        // Authentication
+        async function authenticateClient(
+            clientId = "CLI-001",
+            apiKey = "techshop_api_key_123"
+        ) {
+            try {
+            const response = await fetch(`${API_BASE}/auth/client/login`, {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ clientId, apiKey }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                authToken = data.token;
+                currentClientId = clientId;
+                document.getElementById("authOutput").innerHTML = `
+                <div style="color: var(--success-color);">
+                    <i class="fas fa-check-circle"></i> <strong>Authentication Successful</strong>
+                </div>
+                <div style="margin-top: 0.5rem;">
+                    <strong>Company:</strong> ${data.client.companyName}<br>
+                    <strong>Client ID:</strong> ${data.client.clientId}<br>
+                    <strong>Token:</strong> ${data.token.substring(0, 20)}...
+                </div>
+                `;
+                document.getElementById("submitBtn").disabled = false;
+
+                // Join WebSocket room if connected
+                if (socket && socket.connected) {
+                    socket.emit("join-room", `client-${currentClientId}`);
+                    addUpdate(`📍 Joined room: client-${currentClientId}`, "info");
+                }
+
+                addUpdate(
+                    `🔐 Authenticated as ${data.client.companyName}`,
+                    "success"
+                );
+            } else {
+                document.getElementById("authOutput").innerHTML = `
+                <div style="color: var(--danger-color);">
+                    <i class="fas fa-exclamation-triangle"></i> Authentication failed: ${data.error}
+                </div>
+                `;
+            }
+            } catch (error) {
+            document.getElementById("authOutput").innerHTML = `
+                <div style="color: var(--danger-color);">
+                <i class="fas fa-times-circle"></i> Connection error: ${error.message}
+                </div>
+            `;
+            }
+        }
+
+        // Submit Order
+        async function submitOrder() {
+            if (!authToken) {
+                alert("Please authenticate first");
+                return;
+            }
+
+            const orderData = {
+            clientId: currentClientId,
+            packageDetails: {
+                weight: parseFloat(document.getElementById("packageWeight").value),
+                dimensions: { length: 30, width: 20, height: 15 },
+                description: document.getElementById("packageDesc").value,
+                value: 50000,
+            },
+            pickupAddress: {
+                street: "123 Galle Road",
+                city: "Colombo",
+                postalCode: "00300",
+                country: "Sri Lanka",
+                coordinates: { lat: 6.9271, lng: 79.8612 },
+            },
+            deliveryAddress: {
+                street: "456 Main Street",
+                city: document.getElementById("deliveryCity").value,
+                postalCode: "20000",
+                country: "Sri Lanka",
+                coordinates: { lat: 7.2906, lng: 80.6337 },
+                contactName: "John Doe",
+                contactPhone: "+94771234567",
+            },
+            priority: document.getElementById("priority").value,
+            };
+
+            try {
+            const response = await fetch(`${API_BASE}/orders`, {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authToken}`,
+                },
+                body: JSON.stringify(orderData),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                updateOrderOutput(`
+                <div style="color: var(--success-color);">
+                    <i class="fas fa-check-circle"></i> <strong>Order Submitted Successfully!</strong>
+                </div>
+                <div style="margin-top: 1rem;">
+                    <strong>Order ID:</strong> ${data.orderId}<br>
+                    <strong>Package:</strong> ${orderData.packageDetails.description}<br>
+                    <strong>Destination:</strong> ${orderData.deliveryAddress.city}<br>
+                    <strong>Priority:</strong> ${orderData.priority}<br>
+                    <strong>Status:</strong> <span style="color: var(--warning-color);">Processing...</span>
+                </div>
+                `);
+                addUpdate(`📦 New order created: ${data.orderId}`, "success");
+            } else {
+                updateOrderOutput(`
+                <div style="color: var(--danger-color);">
+                    <i class="fas fa-times-circle"></i> Order submission failed: ${data.error}
+                </div>
+                `);
+            }
+            } catch (error) {
+            updateOrderOutput(`
+                <div style="color: var(--danger-color);">
+                <i class="fas fa-times-circle"></i> Connection error: ${error.message}
+                </div>
+            `);
+            }
+        }
+
+        // Get Orders
+        async function getOrders() {
+            if (!authToken || !currentClientId) {
+                alert("Please authenticate first");
+                return;
+            }
+
+            try {
+            const response = await fetch(
+                `${API_BASE}/clients/${currentClientId}/orders`,
+                {
+                headers: {
+                    Authorization: `Bearer ${authToken}`,
+                },
+                }
+            );
+
+            const data = await response.json();
+
+            if (data.success) {
+                let output = `
+                <div style="color: var(--primary-color);">
+                    <i class="fas fa-list"></i> <strong>Your Orders (${data.orders.length} total)</strong>
+                </div>
+                <div style="margin-top: 1rem;">
+                `;
+
+                data.orders.forEach((order, index) => {
+                const statusColor =
+                    order.status === "completed"
+                    ? "var(--success-color)"
+                    : order.status === "processing"
+                    ? "var(--warning-color)"
+                    : "var(--info-color)";
+
+                output += `
+                    <div style="margin-bottom: 1rem; padding: 0.75rem; background: var(--bg-accent); border-radius: var(--radius-sm);">
+                    <strong>${index + 1}. ${order.orderId}</strong><br>
+                    <span style="margin-left: 1rem;"><i class="fas fa-box"></i> ${
+                        order.packageDetails.description
+                    }</span><br>
+                    <span style="margin-left: 1rem;"><i class="fas fa-map-marker-alt"></i> ${
+                        order.deliveryAddress.city
+                    }</span><br>
+                    <span style="margin-left: 1rem;"><i class="fas fa-sync-alt"></i> Status: <span style="color: ${statusColor};">${
+                    order.status
+                }</span></span><br>
+                    <span style="margin-left: 1rem;"><i class="fas fa-calendar"></i> ${new Date(
+                        order.createdAt
+                    ).toLocaleString()}</span>
+                    </div>
+                `;
+                });
+
+                output += "</div>";
+                updateOrderOutput(output);
+                addUpdate(`📋 Loaded ${data.orders.length} orders`, "info");
+            } else {
+                updateOrderOutput(`
+                <div style="color: var(--danger-color);">
+                    <i class="fas fa-times-circle"></i> Failed to load orders: ${data.error}
+                </div>
+                `);
+            }
+            } catch (error) {
+            updateOrderOutput(`
+                <div style="color: var(--danger-color);">
+                <i class="fas fa-times-circle"></i> Connection error: ${error.message}
+                </div>
+            `);
+            }
+        }
+
+        // System Health Check
+        async function checkSystemHealth() {
+            try {
+                const response = await fetch("http://localhost:5000/health");
+                const data = await response.json();
+
+            document.getElementById("healthOutput").innerHTML = `
+                <div style="color: var(--success-color);">
+                <i class="fas fa-heartbeat"></i> <strong>System Health Check</strong>
+                </div>
+                <div style="margin-top: 1rem;">
+                <div><i class="fas fa-server" style="color: var(--success-color);"></i> API Server: ${
+                    data.status
+                }</div>
+                <div><i class="fas fa-clock" style="color: var(--info-color);"></i> Uptime: ${Math.floor(
+                    data.uptime / 60
+                )} minutes</div>
+                <div><i class="fas fa-calendar" style="color: var(--text-muted);"></i> Last Check: ${
+                    data.timestamp
+                }</div>
+                <div><i class="fas fa-database" style="color: var(--success-color);"></i> MongoDB: Connected</div>
+                <div><i class="fas fa-rabbit" style="color: ${
+                    socket && socket.connected
+                    ? "var(--success-color)"
+                    : "var(--warning-color)"
+                };"></i> WebSocket: ${
+                socket && socket.connected ? "Connected" : "Checking..."
+            }</div>
+                <div><i class="fas fa-cog" style="color: var(--success-color);"></i> Background Workers: Active</div>
+                </div>
+            `;
+            addUpdate("🏥 Health check completed", "success");
+            } catch (error) {
+            document.getElementById("healthOutput").innerHTML = `
+                <div style="color: var(--danger-color);">
+                <i class="fas fa-times-circle"></i> Health check failed: ${error.message}
+                </div>
+            `;
+            }
+        }
+
+        // Simulate Driver Update
+        function simulateDriverUpdate() {
+            if (socket && socket.connected) {
+                addUpdate("🚚 Simulating driver location update...", "info");
+                setTimeout(() => {
+                    addUpdate(
+                    "📍 Driver at intersection of Main St & Oak Ave",
+                    "success"
+                    );
+                    addUpdate("🕐 ETA updated: 15 minutes", "info");
+                }, 1000);
+            } else {
+                alert("Please connect WebSocket first");
+            }
+        }
+
+        function updateOrderOutput(html) {
+            document.getElementById("orderOutput").innerHTML = html;
+        }
+
+        // Initialize
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log("SwiLogistics Client Portal loaded");
+            addUpdate("🚀 SwiLogistics Portal initialized", "success");
+        });
+        </script>
+    </body>
+</html>

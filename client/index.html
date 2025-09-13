@@ -1,575 +1,532 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SwiLogistics - Client Portal</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SwiLogistics - Client Portal</title>
+        <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        rel="stylesheet"
+        />
+        <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+        />
+        <link rel="stylesheet" href="styles/main.css" />
+    </head>
 
-      body {
-        font-family: "Arial", sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+    <body>
+        <div class="app-container">
+            <div class="main-card">
+                <!-- Header -->
+                <div class="header">
+                <div class="header-content">
+                    <h1><i class="fas fa-truck"></i> SwiLogistics</h1>
+                    <p>Professional Client Portal - Real-time Package Management</p>
+                    <div>
+                    <span id="connectionStatus" class="status-badge disconnected">
+                        <i class="fas fa-circle"></i> Disconnected
+                    </span>
+                    </div>
+                </div>
+                </div>
 
-      .container {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        padding: 2rem;
-        width: 90%;
-        max-width: 800px;
-      }
+                <!-- Main Content -->
+                <div class="main-content">
+                <!-- Authentication Section -->
+                <div id="authContainer">
+                    <div class="section-card">
+                    <div class="section-header">
+                        <h3><i class="fas fa-shield-alt"></i> Authentication</h3>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                        <input
+                            type="text"
+                            id="clientId"
+                            placeholder="Client ID"
+                            value="CLI-001"
+                            class="form-input"
+                        />
+                        </div>
+                        <div class="form-group">
+                        <input
+                            type="password"
+                            id="apiKey"
+                            placeholder="API Key"
+                            value="techshop_api_key_123"
+                            class="form-input"
+                        />
+                        </div>
+                        <button onclick="authenticate()" class="btn btn-primary">
+                        <i class="fas fa-key"></i> Authenticate
+                        </button>
+                        <div id="authOutput" class="output-area">
+                        <div style="color: #94a3b8; font-style: italic">
+                            Click authenticate to connect...
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
 
-      .header {
-        text-align: center;
-        margin-bottom: 2rem;
-      }
+                <!-- Order Management Section -->
+                <div id="orderContainer">
+                    <div class="section-card">
+                    <div class="section-header">
+                        <h3><i class="fas fa-box"></i> Order Management</h3>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-grid">
+                        <input
+                            type="number"
+                            id="packageWeight"
+                            placeholder="Weight (kg)"
+                            value="5.5"
+                            class="form-input"
+                        />
+                        <input
+                            type="text"
+                            id="packageDesc"
+                            placeholder="Description"
+                            value="Electronics - Laptop"
+                            class="form-input"
+                        />
+                        <input
+                            type="text"
+                            id="deliveryCity"
+                            placeholder="Delivery City"
+                            value="Kandy"
+                            class="form-input"
+                        />
+                        <select id="priority" class="form-input">
+                            <option value="standard">Standard</option>
+                            <option value="express">Express</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                        </div>
+                        <div class="button-group">
+                        <button
+                            onclick="submitOrder()"
+                            id="submitBtn"
+                            disabled
+                            class="btn btn-primary"
+                        >
+                            <i class="fas fa-paper-plane"></i> Submit Order
+                        </button>
+                        <button onclick="getOrders()" class="btn btn-secondary">
+                            <i class="fas fa-list"></i> Get My Orders
+                        </button>
+                        </div>
+                        <div id="orderOutput" class="output-area">
+                        <div style="color: #94a3b8; font-style: italic">
+                            Submit an order or fetch existing orders...
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
 
-      .header h1 {
-        color: #333;
-        margin-bottom: 0.5rem;
-      }
+                <!-- System Monitoring Section -->
+                <div id="systemContainer">
+                    <div class="section-card">
+                    <div class="section-header">
+                        <h3><i class="fas fa-heartbeat"></i> System Health</h3>
+                    </div>
+                    <div class="section-content">
+                        <button onclick="checkHealth()" class="btn btn-success">
+                        <i class="fas fa-stethoscope"></i> Check Health
+                        </button>
+                        <div id="healthOutput" class="output-area">
+                        <div style="color: #94a3b8; font-style: italic">
+                            Click to check system status...
+                        </div>
+                        </div>
+                    </div>
+                    </div>
 
-      .header p {
-        color: #666;
-      }
-
-      .demo-section {
-        margin-bottom: 2rem;
-        padding: 1.5rem;
-        border: 1px solid #e0e0e0;
-        border-radius: 10px;
-        background: #f9f9f9;
-      }
-
-      .demo-section h3 {
-        color: #333;
-        margin-bottom: 1rem;
-        border-bottom: 2px solid #667eea;
-        padding-bottom: 0.5rem;
-      }
-
-      .button-group {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1rem;
-        flex-wrap: wrap;
-      }
-
-      button {
-        background: linear-gradient(45deg, #667eea, #764ba2);
-        color: white;
-        border: none;
-        padding: 0.8rem 1.5rem;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        transition: transform 0.2s;
-      }
-
-      button:hover {
-        transform: translateY(-2px);
-      }
-
-      button:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-        transform: none;
-      }
-
-      .output {
-        background: #f0f0f0;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 1rem;
-        margin-top: 1rem;
-        font-family: "Courier New", monospace;
-        font-size: 0.9rem;
-        max-height: 200px;
-        overflow-y: auto;
-      }
-
-      .status {
-        display: inline-block;
-        padding: 0.3rem 0.8rem;
-        border-radius: 15px;
-        font-size: 0.8rem;
-        font-weight: bold;
-      }
-
-      .status.connected {
-        background: #4caf50;
-        color: white;
-      }
-
-      .status.disconnected {
-        background: #f44336;
-        color: white;
-      }
-
-      .order-form {
-        display: grid;
-        gap: 1rem;
-        margin-bottom: 1rem;
-      }
-
-      .form-group {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .form-group label {
-        margin-bottom: 0.3rem;
-        color: #333;
-        font-weight: bold;
-      }
-
-      .form-group input,
-      .form-group select {
-        padding: 0.5rem;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 0.9rem;
-      }
-
-      .updates-list {
-        max-height: 150px;
-        overflow-y: auto;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 0.5rem;
-        background: white;
-      }
-
-      .update-item {
-        padding: 0.5rem;
-        border-bottom: 1px solid #eee;
-        font-size: 0.9rem;
-      }
-
-      .update-item:last-child {
-        border-bottom: none;
-      }
-
-      .timestamp {
-        color: #666;
-        font-size: 0.8rem;
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="container">
-      <div class="header">
-        <h1>🚚 SwiLogistics Client Portal</h1>
-        <p>Middleware Architecture Demo - Real-time Package Tracking</p>
-        <div style="margin-top: 1rem">
-          <span id="connectionStatus" class="status disconnected"
-            >Disconnected</span
-          >
+                    <div class="section-card">
+                    <div class="section-header">
+                        <h3><i class="fas fa-wifi"></i> Real-time Connection</h3>
+                    </div>
+                    <div class="section-content">
+                        <div class="controls-row">
+                        <div id="wsStatus" style="color: #d97706">
+                            <i class="fas fa-circle"></i> Connecting...
+                        </div>
+                        <button
+                            onclick="toggleConnection()"
+                            id="connectBtn"
+                            class="btn btn-warning"
+                        >
+                            Disconnect
+                        </button>
+                        <button onclick="clearUpdates()" class="btn btn-danger">
+                            Clear
+                        </button>
+                        </div>
+                        <h4 style="margin: 1rem 0 0.5rem 0; color: #64748b">
+                        <i class="fas fa-broadcast-tower"></i> Live Updates
+                        </h4>
+                        <div id="liveUpdates" class="updates-container"></div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
         </div>
-      </div>
 
-      <!-- Authentication Section -->
-      <div class="demo-section">
-        <h3>🔐 Client Authentication</h3>
-        <div class="button-group">
-          <button onclick="authenticateClient()">Login as TechShop</button>
-          <button
-            onclick="authenticateClient('CLI-002', 'fashionhub_api_key_789')"
-          >
-            Login as Fashion Hub
-          </button>
-        </div>
-        <div class="output" id="authOutput">
-          Click login button to authenticate...
-        </div>
-      </div>
+        <!-- Scripts -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+        // Global variables
+        let socket = null;
+        let authToken = null;
+        let currentClientId = null;
+        let updateCount = 0;
 
-      <!-- Order Submission Section -->
-      <div class="demo-section">
-        <h3>📦 Submit Order</h3>
-        <div class="order-form">
-          <div class="form-group">
-            <label>Package Description:</label>
-            <input
-              type="text"
-              id="packageDesc"
-              value="Electronics - Smartphone"
-            />
-          </div>
-          <div class="form-group">
-            <label>Weight (kg):</label>
-            <input type="number" id="packageWeight" value="2.5" step="0.1" />
-          </div>
-          <div class="form-group">
-            <label>Delivery City:</label>
-            <select id="deliveryCity">
-              <option value="Kandy">Kandy</option>
-              <option value="Galle">Galle</option>
-              <option value="Jaffna">Jaffna</option>
-              <option value="Anuradhapura">Anuradhapura</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Priority:</label>
-            <select id="priority">
-              <option value="normal">Normal</option>
-              <option value="high">High</option>
-              <option value="urgent">Urgent</option>
-            </select>
-          </div>
-        </div>
-        <div class="button-group">
-          <button onclick="submitOrder()" id="submitBtn" disabled>
-            Submit Order
-          </button>
-          <button onclick="getOrders()">View My Orders</button>
-        </div>
-        <div class="output" id="orderOutput">Please authenticate first...</div>
-      </div>
-
-      <!-- Real-time Updates Section -->
-      <div class="demo-section">
-        <h3>⚡ Real-time Updates</h3>
-        <div class="button-group">
-          <button onclick="connectWebSocket()">Connect WebSocket</button>
-          <button onclick="disconnectWebSocket()">Disconnect</button>
-          <button onclick="clearUpdates()">Clear Updates</button>
-        </div>
-        <div class="updates-list" id="updatesList">
-          <div class="update-item">
-            <div>📡 Click "Connect WebSocket" to receive real-time updates</div>
-            <div class="timestamp">System ready</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- System Integration Status -->
-      <div class="demo-section">
-        <h3>🔗 System Integration Status</h3>
-        <div class="button-group">
-          <button onclick="checkSystemHealth()">Check System Health</button>
-          <button onclick="simulateDriverUpdate()">
-            Simulate Driver Update
-          </button>
-        </div>
-        <div class="output" id="healthOutput">
-          System status: Ready for demonstration
-        </div>
-      </div>
-    </div>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-      let socket = null;
-      let authToken = null;
-      let currentClientId = null;
-
-      // API Base URL
-      const API_BASE = "http://localhost:5000/api";
-
-      // Connect WebSocket
-      function connectWebSocket() {
-        if (socket) {
-          socket.disconnect();
-        }
-
-        socket = io("http://localhost:5000");
-
-        socket.on("connect", () => {
-          updateConnectionStatus(true);
-          addUpdate("🔗 Connected to SwiLogistics middleware", "success");
-
-          if (currentClientId) {
-            socket.emit("join-room", `client-${currentClientId}`);
-            addUpdate(`📍 Joined room: client-${currentClientId}`, "info");
-          }
+        // Initialize the application
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log("🚀 SwiLogistics Client Portal Loading...");
+            initializeWebSocket();
+            console.log("✅ Application loaded successfully");
         });
 
-        socket.on("disconnect", () => {
-          updateConnectionStatus(false);
-          addUpdate("❌ Disconnected from server", "error");
-        });
+        // WebSocket initialization
+        function initializeWebSocket() {
+            try {
+            socket = io("ws://localhost:5000");
 
-        socket.on("orderUpdate", (data) => {
-          addUpdate(`📦 Order ${data.orderId}: ${data.status}`, "success");
-          updateOrderOutput(
-            `Real-time update: Order ${data.orderId} is now ${data.status}`
-          );
-        });
-
-        socket.on("driverLocation", (data) => {
-          addUpdate(
-            `🚚 Driver location update for order ${data.orderId}`,
-            "info"
-          );
-        });
-
-        socket.on("systemUpdate", (data) => {
-          addUpdate(`🔔 System: ${data.message}`, "warning");
-        });
-      }
-
-      function disconnectWebSocket() {
-        if (socket) {
-          socket.disconnect();
-          socket = null;
-        }
-        updateConnectionStatus(false);
-      }
-
-      function updateConnectionStatus(connected) {
-        const status = document.getElementById("connectionStatus");
-        status.className = connected
-          ? "status connected"
-          : "status disconnected";
-        status.textContent = connected ? "Connected" : "Disconnected";
-      }
-
-      function addUpdate(message, type = "info") {
-        const updatesList = document.getElementById("updatesList");
-        const updateItem = document.createElement("div");
-        updateItem.className = "update-item";
-
-        const icon =
-          type === "success"
-            ? "✅"
-            : type === "error"
-            ? "❌"
-            : type === "warning"
-            ? "⚠️"
-            : "ℹ️";
-
-        updateItem.innerHTML = `
-                <div>${icon} ${message}</div>
-                <div class="timestamp">${new Date().toLocaleTimeString()}</div>
-            `;
-
-        updatesList.insertBefore(updateItem, updatesList.firstChild);
-
-        // Keep only last 10 updates
-        while (updatesList.children.length > 10) {
-          updatesList.removeChild(updatesList.lastChild);
-        }
-      }
-
-      function clearUpdates() {
-        document.getElementById("updatesList").innerHTML = "";
-      }
-
-      // Authentication
-      async function authenticateClient(
-        clientId = "CLI-001",
-        apiKey = "techshop_api_key_123"
-      ) {
-        try {
-          const response = await fetch(`${API_BASE}/auth/client/login`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ clientId, apiKey }),
-          });
-
-          const data = await response.json();
-
-          if (data.success) {
-            authToken = data.token;
-            currentClientId = clientId;
-            document.getElementById("authOutput").innerHTML = `
-                        ✅ Authenticated as: ${data.client.companyName}<br>
-                        🆔 Client ID: ${data.client.clientId}<br>
-                        🔑 Token: ${data.token.substring(0, 20)}...
-                    `;
-            document.getElementById("submitBtn").disabled = false;
-
-            // Join WebSocket room if connected
-            if (socket && socket.connected) {
-              socket.emit("join-room", `client-${currentClientId}`);
-              addUpdate(`📍 Joined room: client-${currentClientId}`, "info");
-            }
-          } else {
-            document.getElementById(
-              "authOutput"
-            ).innerHTML = `❌ Authentication failed: ${data.error}`;
-          }
-        } catch (error) {
-          document.getElementById(
-            "authOutput"
-          ).innerHTML = `❌ Connection error: ${error.message}`;
-        }
-      }
-
-      // Submit Order
-      async function submitOrder() {
-        if (!authToken) {
-          alert("Please authenticate first");
-          return;
-        }
-
-        const orderData = {
-          clientId: currentClientId,
-          packageDetails: {
-            weight: parseFloat(document.getElementById("packageWeight").value),
-            dimensions: { length: 30, width: 20, height: 15 },
-            description: document.getElementById("packageDesc").value,
-            value: 50000,
-          },
-          pickupAddress: {
-            street: "123 Galle Road",
-            city: "Colombo",
-            postalCode: "00300",
-            country: "Sri Lanka",
-            coordinates: { lat: 6.9271, lng: 79.8612 },
-          },
-          deliveryAddress: {
-            street: "456 Main Street",
-            city: document.getElementById("deliveryCity").value,
-            postalCode: "20000",
-            country: "Sri Lanka",
-            coordinates: { lat: 7.2906, lng: 80.6337 },
-            contactName: "John Doe",
-            contactPhone: "+94771234567",
-          },
-          priority: document.getElementById("priority").value,
-        };
-
-        try {
-          const response = await fetch(`${API_BASE}/orders`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${authToken}`,
-            },
-            body: JSON.stringify(orderData),
-          });
-
-          const data = await response.json();
-
-          if (data.success) {
-            updateOrderOutput(`
-                        ✅ Order submitted successfully!<br>
-                        📋 Order ID: ${data.orderId}<br>
-                        📦 Package: ${orderData.packageDetails.description}<br>
-                        📍 Destination: ${orderData.deliveryAddress.city}<br>
-                        ⚡ Priority: ${orderData.priority}<br>
-                        🔄 Status: Processing...
-                    `);
-            addUpdate(`📦 New order created: ${data.orderId}`, "success");
-          } else {
-            updateOrderOutput(`❌ Order submission failed: ${data.error}`);
-          }
-        } catch (error) {
-          updateOrderOutput(`❌ Connection error: ${error.message}`);
-        }
-      }
-
-      // Get Orders
-      async function getOrders() {
-        if (!authToken || !currentClientId) {
-          alert("Please authenticate first");
-          return;
-        }
-
-        try {
-          const response = await fetch(
-            `${API_BASE}/clients/${currentClientId}/orders`,
-            {
-              headers: {
-                Authorization: `Bearer ${authToken}`,
-              },
-            }
-          );
-
-          const data = await response.json();
-
-          if (data.success) {
-            let output = `📋 <strong>Your Orders (${data.orders.length} total):</strong><br><br>`;
-
-            data.orders.forEach((order, index) => {
-              output += `
-                            ${index + 1}. ${order.orderId}<br>
-                            &nbsp;&nbsp;&nbsp;📦 ${
-                              order.packageDetails.description
-                            }<br>
-                            &nbsp;&nbsp;&nbsp;📍 ${
-                              order.deliveryAddress.city
-                            }<br>
-                            &nbsp;&nbsp;&nbsp;🔄 Status: ${order.status}<br>
-                            &nbsp;&nbsp;&nbsp;📅 Created: ${new Date(
-                              order.createdAt
-                            ).toLocaleString()}<br><br>
-                        `;
+            socket.on("connect", () => {
+                updateStatus("connected", "Connected", "#059669");
+                addUpdate("🔌 WebSocket connected", "success");
             });
 
-            updateOrderOutput(output);
-          } else {
-            updateOrderOutput(`❌ Failed to load orders: ${data.error}`);
-          }
-        } catch (error) {
-          updateOrderOutput(`❌ Connection error: ${error.message}`);
-        }
-      }
+            socket.on("disconnect", () => {
+                updateStatus("disconnected", "Disconnected", "#dc2626");
+                addUpdate("🔌 WebSocket disconnected", "warning");
+            });
 
-      // System Health Check
-      async function checkSystemHealth() {
-        try {
-          const response = await fetch("http://localhost:5000/health");
-          const data = await response.json();
+            socket.on("connect_error", (error) => {
+                updateStatus("error", "Error", "#d97706");
+                addUpdate(`⚠️ Connection error: ${error.message}`, "warning");
+            });
 
-          document.getElementById("healthOutput").innerHTML = `
-                    ✅ <strong>System Health Check:</strong><br>
-                    🟢 API Server: ${data.status}<br>
-                    ⏱️ Uptime: ${Math.floor(data.uptime / 60)} minutes<br>
-                    🕐 Last Check: ${data.timestamp}<br>
-                    🗄️ MongoDB: Connected<br>
-                    🐰 RabbitMQ: ${
-                      socket && socket.connected ? "Connected" : "Checking..."
-                    }<br>
-                    🔄 Background Workers: Active
-                `;
-        } catch (error) {
-          document.getElementById(
-            "healthOutput"
-          ).innerHTML = `❌ Health check failed: ${error.message}`;
-        }
-      }
-
-      // Simulate Driver Update
-      function simulateDriverUpdate() {
-        if (socket && socket.connected) {
-          addUpdate("🚚 Simulating driver location update...", "info");
-          setTimeout(() => {
+            addUpdate("🚀 WebSocket service initialized", "info");
+            } catch (error) {
+            console.error("WebSocket init error:", error);
             addUpdate(
-              "📍 Driver at intersection of Main St & Oak Ave",
-              "success"
+                `❌ WebSocket initialization failed: ${error.message}`,
+                "error"
             );
-            addUpdate("🕐 ETA updated: 15 minutes", "info");
-          }, 1000);
-        } else {
-          alert("Please connect WebSocket first");
+            }
         }
-      }
 
-      function updateOrderOutput(html) {
-        document.getElementById("orderOutput").innerHTML = html;
-      }
+        function updateStatus(status, text, color) {
+            const wsStatus = document.getElementById("wsStatus");
+            const connectionStatus = document.getElementById("connectionStatus");
 
-      // Initialize
-      document.addEventListener("DOMContentLoaded", () => {
-        console.log("SwiLogistics Client Portal loaded");
-        addUpdate("🚀 SwiLogistics Portal initialized", "success");
-      });
-    </script>
-  </body>
+            wsStatus.innerHTML = `<span style="color: ${color};"><i class="fas fa-circle"></i> ${text}</span>`;
+            connectionStatus.className = `status-badge ${status}`;
+            connectionStatus.innerHTML = `<i class="fas fa-circle"></i> ${text}`;
+        }
+
+        // Authentication
+        async function authenticate() {
+            const clientId = document.getElementById("clientId").value;
+            const apiKey = document.getElementById("apiKey").value;
+
+            try {
+            const response = await fetch("/api/auth/client/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ clientId, apiKey }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                authToken = data.token;
+                currentClientId = clientId;
+                document.getElementById("submitBtn").disabled = false;
+
+                document.getElementById("authOutput").innerHTML = `
+                            <div style="color: #059669;">
+                                <i class="fas fa-check-circle"></i> <strong>Authentication Successful</strong>
+                            </div>
+                            <div style="margin-top: 0.5rem;">
+                                <strong>Company:</strong> ${data.client.companyName}<br>
+                                <strong>Client ID:</strong> ${data.client.clientId}
+                            </div>
+                        `;
+
+                addUpdate(
+                `🔐 Authenticated as ${data.client.companyName}`,
+                "success"
+                );
+            } else {
+                document.getElementById("authOutput").innerHTML = `
+                            <div style="color: #dc2626;">
+                                <i class="fas fa-exclamation-triangle"></i> Authentication failed: ${data.error}
+                            </div>
+                        `;
+            }
+            } catch (error) {
+            document.getElementById("authOutput").innerHTML = `
+                        <div style="color: #dc2626;">
+                            <i class="fas fa-times-circle"></i> Connection error: ${error.message}
+                        </div>
+                    `;
+            }
+        }
+
+        // Submit Order
+        async function submitOrder() {
+            if (!authToken) {
+            alert("Please authenticate first");
+            return;
+            }
+
+            const orderData = {
+            clientId: currentClientId,
+            packageDetails: {
+                weight: parseFloat(document.getElementById("packageWeight").value),
+                dimensions: { length: 30, width: 20, height: 15 },
+                description: document.getElementById("packageDesc").value,
+                value: 50000,
+            },
+            pickupAddress: {
+                street: "123 Galle Road",
+                city: "Colombo",
+                postalCode: "00300",
+                country: "Sri Lanka",
+                coordinates: { lat: 6.9271, lng: 79.8612 },
+            },
+            deliveryAddress: {
+                street: "456 Main Street",
+                city: document.getElementById("deliveryCity").value,
+                postalCode: "20000",
+                country: "Sri Lanka",
+                coordinates: { lat: 7.2906, lng: 80.6337 },
+                contactName: "John Doe",
+                contactPhone: "+94771234567",
+            },
+            priority: document.getElementById("priority").value,
+            };
+
+            try {
+            const response = await fetch("/api/orders", {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authToken}`,
+                },
+                body: JSON.stringify(orderData),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                document.getElementById("orderOutput").innerHTML = `
+                            <div style="color: #059669;">
+                                <i class="fas fa-check-circle"></i> <strong>Order Submitted Successfully!</strong>
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <strong>Order ID:</strong> ${data.orderId}<br>
+                                <strong>Package:</strong> ${orderData.packageDetails.description}<br>
+                                <strong>Destination:</strong> ${orderData.deliveryAddress.city}<br>
+                                <strong>Priority:</strong> ${orderData.priority}
+                            </div>
+                        `;
+                addUpdate(`📦 New order created: ${data.orderId}`, "success");
+            } else {
+                document.getElementById("orderOutput").innerHTML = `
+                            <div style="color: #dc2626;">
+                                <i class="fas fa-times-circle"></i> Order submission failed: ${data.error}
+                            </div>
+                        `;
+            }
+            } catch (error) {
+            document.getElementById("orderOutput").innerHTML = `
+                        <div style="color: #dc2626;">
+                            <i class="fas fa-times-circle"></i> Connection error: ${error.message}
+                        </div>
+                    `;
+            }
+        }
+
+        // Get Orders
+        async function getOrders() {
+            if (!authToken || !currentClientId) {
+            alert("Please authenticate first");
+            return;
+            }
+
+            try {
+            const response = await fetch(
+                `/api/clients/${currentClientId}/orders`,
+                {
+                headers: { Authorization: `Bearer ${authToken}` },
+                }
+            );
+
+            const data = await response.json();
+
+            if (data.success) {
+                let output = `
+                            <div style="color: #2563eb;">
+                                <i class="fas fa-list"></i> <strong>Your Orders (${data.orders.length} total)</strong>
+                            </div>
+                            <div style="margin-top: 1rem;">
+                        `;
+
+                data.orders.forEach((order, index) => {
+                const statusColor =
+                    order.status === "completed"
+                    ? "#059669"
+                    : order.status === "processing"
+                    ? "#d97706"
+                    : "#0891b2";
+
+                output += `
+                                <div style="margin-bottom: 1rem; padding: 0.75rem; background: #f1f5f9; border-radius: 8px;">
+                                    <strong>${index + 1}. ${
+                    order.orderId
+                }</strong><br>
+                                    <span style="margin-left: 1rem;"><i class="fas fa-box"></i> ${
+                                    order.packageDetails.description
+                                    }</span><br>
+                                    <span style="margin-left: 1rem;"><i class="fas fa-map-marker-alt"></i> ${
+                                    order.deliveryAddress.city
+                                    }</span><br>
+                                    <span style="margin-left: 1rem;"><i class="fas fa-sync-alt"></i> Status: <span style="color: ${statusColor};">${
+                    order.status
+                }</span></span>
+                                </div>
+                            `;
+                });
+
+                output += "</div>";
+                document.getElementById("orderOutput").innerHTML = output;
+                addUpdate(`📋 Loaded ${data.orders.length} orders`, "info");
+            } else {
+                document.getElementById("orderOutput").innerHTML = `
+                            <div style="color: #dc2626;">
+                                <i class="fas fa-times-circle"></i> Failed to load orders: ${data.error}
+                            </div>
+                        `;
+            }
+            } catch (error) {
+            document.getElementById("orderOutput").innerHTML = `
+                        <div style="color: #dc2626;">
+                            <i class="fas fa-times-circle"></i> Connection error: ${error.message}
+                        </div>
+                    `;
+            }
+        }
+
+        // System Health Check
+        async function checkHealth() {
+            try {
+            const response = await fetch("/health");
+            const data = await response.json();
+
+            document.getElementById("healthOutput").innerHTML = `
+                        <div style="color: #059669;">
+                            <i class="fas fa-heartbeat"></i> <strong>System Health Check</strong>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <div><i class="fas fa-server" style="color: #059669;"></i> API Server: ${
+                            data.status
+                            }</div>
+                            <div><i class="fas fa-clock" style="color: #0891b2;"></i> Uptime: ${Math.floor(
+                            data.uptime / 60
+                            )} minutes</div>
+                            <div><i class="fas fa-database" style="color: #059669;"></i> MongoDB: Connected</div>
+                            <div><i class="fas fa-wifi" style="color: ${
+                            socket && socket.connected ? "#059669" : "#d97706"
+                            };"></i> WebSocket: ${
+                socket && socket.connected ? "Connected" : "Checking..."
+            }</div>
+                        </div>
+                    `;
+            addUpdate("🏥 Health check completed", "success");
+            } catch (error) {
+            document.getElementById("healthOutput").innerHTML = `
+                        <div style="color: #dc2626;">
+                            <i class="fas fa-times-circle"></i> Health check failed: ${error.message}
+                        </div>
+                    `;
+            }
+        }
+
+        // Toggle WebSocket Connection
+        function toggleConnection() {
+            const connectBtn = document.getElementById("connectBtn");
+
+            if (socket && socket.connected) {
+            socket.disconnect();
+            connectBtn.textContent = "Connect";
+            addUpdate("🔌 WebSocket disconnected manually", "warning");
+            } else {
+            if (socket) {
+                socket.connect();
+            } else {
+                initializeWebSocket();
+            }
+            connectBtn.textContent = "Disconnect";
+            addUpdate("🔌 WebSocket connection initiated", "info");
+            }
+        }
+
+        // Add Update to Live Feed
+        function addUpdate(message, type = "info") {
+            const updatesContainer = document.getElementById("liveUpdates");
+            updateCount++;
+
+            const colors = {
+            success: "#059669",
+            error: "#dc2626",
+            warning: "#d97706",
+            info: "#0891b2",
+            };
+
+            const update = document.createElement("div");
+            update.style.cssText = `
+                    padding: 0.5rem 0.75rem;
+                    margin-bottom: 0.5rem;
+                    background: #f1f5f9;
+                    border-left: 3px solid ${colors[type]};
+                    border-radius: 8px;
+                    font-size: 0.875rem;
+                `;
+
+            update.innerHTML = `
+                    <span style="color: ${colors[type]}; font-weight: 500;">
+                        #${updateCount}
+                    </span>
+                    <span style="color: #64748b; margin-left: 0.5rem;">
+                        ${new Date().toLocaleTimeString()}
+                    </span>
+                    <div style="margin-top: 0.25rem; color: #1e293b;">
+                        ${message}
+                    </div>
+                `;
+
+            updatesContainer.insertBefore(update, updatesContainer.firstChild);
+
+            // Limit to 20 updates
+            while (updatesContainer.children.length > 20) {
+            updatesContainer.removeChild(updatesContainer.lastChild);
+            }
+        }
+
+        // Clear Updates
+        function clearUpdates() {
+            document.getElementById("liveUpdates").innerHTML = "";
+            updateCount = 0;
+            addUpdate("🧹 Updates cleared", "info");
+        }
+        </script>
+    </body>
 </html>
