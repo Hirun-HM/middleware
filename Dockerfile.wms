@@ -1,0 +1,8 @@
+# Dockerfile.wms
+FROM node:18-alpine
+WORKDIR /app
+COPY mock-wms/package.json ./
+RUN npm install
+COPY mock-wms/ ./
+EXPOSE 9092
+CMD ["node", "server.js"]

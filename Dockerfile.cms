@@ -1,0 +1,8 @@
+# Dockerfile.cms
+FROM node:18-alpine
+WORKDIR /app
+COPY mock-cms/package.json ./
+RUN npm install
+COPY mock-cms/ ./
+EXPOSE 8080
+CMD ["node", "server.js"]

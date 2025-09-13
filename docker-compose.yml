@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:6.0
+    container_name: swilogistics-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=swilogistics
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - swilogistics-network
+
+  # RabbitMQ Message Broker
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: swilogistics-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin123
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - swilogistics-network
+
+  # Node.js API Server
+  api-server:
+    build: .
+    container_name: swilogistics-api
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/swilogistics
+      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq:5672
+      - JWT_SECRET=your_production_jwt_secret
+    depends_on:
+      - mongodb
+      - rabbitmq
+    volumes:
+      - ./src:/app/src
+      - ./package.json:/app/package.json
+    networks:
+      - swilogistics-network
+
+  # Mock CMS Service (SOAP)
+  mock-cms:
+    build:
+      context: .
+      dockerfile: Dockerfile.cms
+    container_name: swilogistics-cms
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - swilogistics-network
+
+  # Mock ROS Service (REST)
+  mock-ros:
+    build:
+      context: .
+      dockerfile: Dockerfile.ros
+    container_name: swilogistics-ros
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    networks:
+      - swilogistics-network
+
+  # Mock WMS Service (TCP)
+  mock-wms:
+    build:
+      context: .
+      dockerfile: Dockerfile.wms
+    container_name: swilogistics-wms
+    restart: unless-stopped
+    ports:
+      - "9092:9092"
+    networks:
+      - swilogistics-network
+
+volumes:
+  mongodb_data:
+  rabbitmq_data:
+
+networks:
+  swilogistics-network:
+    driver: bridge

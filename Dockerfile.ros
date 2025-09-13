@@ -1,0 +1,8 @@
+# Dockerfile.ros
+FROM node:18-alpine
+WORKDIR /app
+COPY mock-ros/package.json ./
+RUN npm install
+COPY mock-ros/ ./
+EXPOSE 8081
+CMD ["node", "server.js"]
